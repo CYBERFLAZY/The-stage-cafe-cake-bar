@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kitchen Order Ticket</title>
+<style>
+body{font-family:Arial,sans-serif;background:#eee;margin:0;padding:20px}
+.ticket{width:300px;background:white;margin:auto;padding:15px;color:#000}
+h2{text-align:center;margin:0 0 8px}
+.center{text-align:center}
+hr{border:0;border-top:1px dashed #000}
+.info{display:flex;justify-content:space-between;margin:8px 0}
+table{width:100%;border-collapse:collapse}
+td{padding:7px 2px;font-size:15px}
+.qty{text-align:right}
+button{display:block;margin:15px auto;padding:10px 25px}
+@media print{body{background:white;padding:0}.ticket{width:100%;margin:0}button{display:none}}
+</style>
+</head>
+<body>
+<div class="ticket">
+<h2>THE STAGE CAFE</h2>
+<div class="center">KITCHEN ORDER TICKET</div>
+<hr>
+<div class="info"><b>Table:</b><span id="table">01</span></div>
+<div class="info"><b>Order No:</b><span id="order">1001</span></div>
+<div class="info"><b>Steward:</b><span id="steward">Chanaka</span></div>
+<div class="info"><b>Date:</b><span id="date"></span></div>
+<div class="info"><b>Time:</b><span id="time"></span></div>
+<hr>
+<table>
+<thead><tr><td><b>ITEM</b></td><td class="qty"><b>QTY</b></td></tr></thead>
+<tbody id="items"></tbody>
+</table>
+<hr>
+<div class="center"><b>*** END ***</b></div>
+</div>
+<button onclick="window.print()">PRINT KOT</button>
+<script>
+const p=new URLSearchParams(location.search);
+document.getElementById('table').textContent=p.get('table')||'01';
+document.getElementById('order').textContent=p.get('order')||'1001';
+document.getElementById('steward').textContent=p.get('steward')||'Chanaka';
+document.getElementById('date').textContent=new Date().toLocaleDateString();
+document.getElementById('time').textContent=new Date().toLocaleTimeString();
+let items=[];
+try{items=JSON.parse(p.get('items')||'[]')}catch(e){}
+if(!items.length)items=[{name:'Chicken Cheese Kottu',qty:1},{name:'Rice & Curry',qty:2}];
+document.getElementById('items').innerHTML=items.map(x=>
+`<tr><td>${String(x.name||'').replace(/[<>&"]/g,'')}</td><td class="qty">${Number(x.qty)||1}</td></tr>`
+).join('');
+</script>
+</body>
+</html>
